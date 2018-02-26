@@ -22,7 +22,7 @@ g.append("g")
 
 g.append("g")
     .attr("class", "axis axis--y")
-    .call(d3.axisLeft(y).ticks(10, "%"))
+    .call(d3.axisLeft(y).ticks(5, "%"))
 
 g.selectAll(".bar")
   .data(data)

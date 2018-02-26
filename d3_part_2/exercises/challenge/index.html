@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<html>
+<head>
+
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400italic,600italic,700italic,200,300,400,600,700,900">
+<link rel="stylesheet" type="text/css" href="index.css">
+<script src="http://d3js.org/d3.v4.min.js"></script>
+
+</head>
+
+<body>
+
+<div id="content">
+<h1>S&P 500 Stock Price Index</h1>
+<p>Jan 2000&ndash;Feb 2014</p>
+<div id="chart"></div>
+<p>Source: S&P Dow Jones Indices.</p>
+</div>
+
+<script src="linechart.js"></script>
+<script src="data.js"></script>
+<script>
+
+var chart = timeSeriesChart()
+    .x(function(d) { return formatDate(d.date); })
+    .y(function(d) { return +d.price; });
+
+var formatDate = d3.timeParse("%Y-%m-%d");
+
+d3.select("#chart")
+    .datum(data)
+    .call(chart);
+    
+
+</script>
+</body>
+</html>
