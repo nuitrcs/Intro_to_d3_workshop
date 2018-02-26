@@ -18,20 +18,12 @@
 <p>Source: S&P Dow Jones Indices.</p>
 </div>
 
-<script src="linechart.js"></script>
 <script src="data.js"></script>
+<script src="linechart.js"></script>
+
 <script>
 
-var chart = timeSeriesChart()
-    .x(function(d) { return formatDate(d.date); })
-    .y(function(d) { return +d.price; });
 
-var formatDate = d3.timeParse("%Y-%m-%d");
-
-d3.select("#chart")
-    .datum(data)
-    .call(chart);
-    
 
 </script>
 </body>
