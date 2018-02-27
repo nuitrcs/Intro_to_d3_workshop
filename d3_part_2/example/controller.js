@@ -9,7 +9,7 @@ var charts = {
     width: 760,
     margin: {top: 20, right: 20, bottom: 30, left: 40}
 }
-var colors = ["#CC333F","#EDC951","#00A0B0","#58B947"]
+var colors = ["#00A0B0","#CC333F","#EDC951","#58B947"]
 var tooltip = d3.select("body").append("div").attr("class", "tooltip")
 
 function draw(target,special_class,animation) {
@@ -57,35 +57,6 @@ function draw(target,special_class,animation) {
     scales.y[special_class] = y;
     database[special_class] = data;
     statuses[special_class] = true
-}
-
-function sort() {
-    statuses.sort = !statuses.sort
-    if (!database.unsort) {
-        database.unsort = database.sort;
-        database.sort = data.slice().sort(freqDescending);
-    }
-    var switch_to_data = database.sort
-    if (statuses.sort) {
-        switch_to_data = database.unsort
-    }
-    
-    scales.x.sort.domain(switch_to_data.map(function(d) { return d.letter; }))
-
-    d3.selectAll(".sort")
-        .transition("sorting")
-        .ease(d3.easeBounce)
-        .duration(3000)
-        .delay(2000)
-        .attr("x", function(d) { return scales.x.sort(d.letter); })
-        .call(endall,sort)
-
-    d3.selectAll(".axisx_sort")
-        .transition("sorting")
-        .ease(d3.easeBounce)
-        .duration(3000)
-        .delay(2000)
-        .call(d3.axisBottom(scales.x.sort))
 }
 
 function grow() {
@@ -137,6 +108,35 @@ function move() {
         .call(d3.axisBottom(scales.x.move))
 }
 
+function sort() {
+    statuses.sort = !statuses.sort
+    if (!database.unsort) {
+        database.unsort = database.sort;
+        database.sort = data.slice().sort(freqDescending);
+    }
+    var switch_to_data = database.sort
+    if (statuses.sort) {
+        switch_to_data = database.unsort
+    }
+    
+    scales.x.sort.domain(switch_to_data.map(function(d) { return d.letter; }))
+
+    d3.selectAll(".sort")
+        .transition("sorting")
+        .ease(d3.easeBounce)
+        .duration(3000)
+        .delay(2000)
+        .attr("x", function(d) { return scales.x.sort(d.letter); })
+        .call(endall,sort)
+
+    d3.selectAll(".axisx_sort")
+        .transition("sorting")
+        .ease(d3.easeBounce)
+        .duration(3000)
+        .delay(2000)
+        .call(d3.axisBottom(scales.x.sort))
+}
+
 function color() {
     d3.selectAll(".color")
         .transition("color")
@@ -185,16 +185,28 @@ function clickall() {
     var e = document.createEvent('UIEvents');
     e.initUIEvent('click', true, true, window, 1);
 
-    d3.select(".grow").node().dispatchEvent(e);
-    setTimeout(function(){ 
-        d3.select(".move").node().dispatchEvent(e);
-        setTimeout(function(){ 
-            d3.select(".sort").node().dispatchEvent(e);
+    d3.selectAll('.bar')
+        .transition()
+        .duration(800)
+        .delay(function(d,i){
+            return i*40
+        })
+        .style("fill",function(d,i){
+            var color_index = d3.select(this).classed("grow") ? 0 : d3.select(this).classed("move") ? 1 : d3.select(this).classed("sort") ? 2 : 3;
+            return colors[color_index]
+        })
+        .call(endall,function(){
+            d3.select(".grow").node().dispatchEvent(e);
             setTimeout(function(){ 
-                d3.select(".color").node().dispatchEvent(e);
-            }, 3000)
-        }, 1500)
-    }, 2000)
+                d3.select(".move").node().dispatchEvent(e);
+                setTimeout(function(){ 
+                    d3.select(".sort").node().dispatchEvent(e);
+                    setTimeout(function(){ 
+                        d3.select(".color").node().dispatchEvent(e);
+                    }, 2300)
+                }, 50)
+            }, 1500)
+        })
 }
 
 function mousemove(d,i) {

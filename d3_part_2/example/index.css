@@ -16,21 +16,10 @@ h1 {
 h1:hover {
 	cursor:pointer;
 }
-.move {
-	fill: #CC333F;
+.bar {
+	fill:steelblue;
 }
 
-.sort {
-	fill: #EDC951;
-}
-
-.grow {
-	fill: #00A0B0;
-}
-
-.color {
-	fill: #58B947;
-}
 .bar:hover {
 	fill: brown;
 }
@@ -55,7 +44,6 @@ h1:hover {
 }
 
 #wrapper {
-	margin-top:-18px;
 	width: 1550px;
 	height:850px;
 }
