@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800.67 669.76">
+	<title>example_svgs</title>
+	<line x1="23.5" y1="0.37" x2="156.5" y2="122.37" style="fill:none;stroke:#000;stroke-miterlimit:10"/>
+	<path d="M365.5,61.5c.29,5.65,4,62.67,45,84,34,17.7,73.22.18,96-10,45-20.11,43.49-41.13,79-52,41.82-12.8,96.79.19,115,32,14.84,25.91-4.16,47.8,8,65,12.27,17.36,52.45,24.49,173-18" transform="translate(-81 -54.13)" style="fill:none;stroke:#000;stroke-miterlimit:10"/>
+	<circle cx="117" cy="270.87" r="116.5" style="fill:none;stroke:#000;stroke-miterlimit:10"/>
+	<ellipse cx="594" cy="276.37" rx="187.5" ry="72" style="fill:none;stroke:#000;stroke-miterlimit:10"/>
+	<rect x="59.5" y="412.37" width="246" height="246" style="fill:none;stroke:#000;stroke-miterlimit:10"/>
+	<polygon points="738.23 457.79 750.55 591.6 640.82 669.18 518.77 612.95 506.45 479.13 616.18 401.55 738.23 457.79" style="fill:none;stroke:#000;stroke-miterlimit:10"/>
+</svg>
