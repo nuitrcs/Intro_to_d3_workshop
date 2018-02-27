@@ -78,9 +78,13 @@ function mousemove(d,i) {
         .style("left", d3.event.pageX - w + "px")
         .style("top", d3.event.pageY - h + "px");
 }
+//helpful rounding function
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
 function mousemove(d,i) {
     tooltip
-        .html("Letter: " + d.letter + "<br>Frequency: " + Math.round(d.frequency*100) + "%")
+        .html("Letter: " + d.letter + "<br>Frequency: " + round(d.frequency*100) + "%")
         .style("display", "inline-block")
 
     var w = tooltip.node().offsetWidth/2,

@@ -1,0 +1,61 @@
+h1, h2 {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	font-family: 'Arial', sans-serif;
+	font-size: 2.5em;
+	color: #333;
+	font-weight: 400;
+}
+h1 {
+	line-height: 1em;
+	font-size: 3.5em;
+	font-weight: 900;
+	color: #000;
+}
+h1:hover {
+	cursor:pointer;
+}
+.move {
+	fill: #CC333F;
+}
+
+.sort {
+	fill: #EDC951;
+}
+
+.grow {
+	fill: #00A0B0;
+}
+
+.color {
+	fill: #58B947;
+}
+.bar:hover {
+	fill: brown;
+}
+
+.axis--x path {
+	display: none;
+}
+
+.tooltip {
+	position: absolute;
+	display: none;
+	height: auto;
+	background: none repeat scroll 0 0 #ffffff;
+	border: none;
+	padding: 2px;
+	text-align: center;
+	z-index: 9999;
+}
+
+#grow,#move,#sort,#color {
+	display:inline-block;
+}
+
+#wrapper {
+	margin-top:-18px;
+	width: 1550px;
+	height:850px;
+}
