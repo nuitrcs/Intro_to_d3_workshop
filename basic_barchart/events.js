@@ -16,6 +16,7 @@ function bindEvents() {
 
 	// this is a basic loop in javascript
 	for (i = 0; i < j; i++) {
+		
 		// 'element' here is an HTML element, which can have all kinds
 		// of operations performed on it.
 		var element = bars[i]
@@ -40,5 +41,3 @@ function bindEvents() {
 		});
 	}
 }
-
-

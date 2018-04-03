@@ -43,6 +43,9 @@ d3.tsv("data.tsv", function(d) {
       .attr("x", function(d) { return x(d.letter); })
       .attr("y", function(d) { return y(d.frequency); })
       .attr("width", x.bandwidth())
-      .attr("height", function(d) { return height - y(d.frequency); });
+      .attr("height", function(d) { return height - y(d.frequency); })
+      .on('click',function(d,i){
+        console.log(this)
+      });
   //bindEvents()
 });
