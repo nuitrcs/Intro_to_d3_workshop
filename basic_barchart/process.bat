@@ -1,2 +1,2 @@
-call http-server -c-1
+call http-server -p 1337 -c-1
 pause
