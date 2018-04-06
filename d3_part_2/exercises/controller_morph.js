@@ -1,3 +1,4 @@
+/* BOILERPLATE CODE */
 var svg = d3.select("#graph")
     .attr("width",960)
     .attr("height",500);
@@ -12,6 +13,10 @@ var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
 var g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+/* 
+    The code below only works if your data is available
+    Otherwise, this should go into a callback function (for async)
+*/
 x.domain(data.map(function(d) { return d.letter; }));
 
 y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
@@ -36,7 +41,14 @@ var bars = g.selectAll(".bar")
     .attr("height", function(d) { return height - y(d.frequency); })
     .on("click",morph);
 
+/*
+    The function below does not need to be part of your async callback
+    This is simply bound to your elements during the callback
+*/
+
 function morph(d,i) {
+    // Now it makes sense why we saved a selection as a variable!
+    // (we can simply access the selection again later)
     bars
         .transition()
         .duration(1000)
