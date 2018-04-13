@@ -2,6 +2,10 @@
 <meta charset="utf-8">
 <style>
 
+body {
+  font: 12px Arial;
+}
+
 .axis--x path {
   display: none;
 }
@@ -13,86 +17,198 @@
 }
 
 </style>
-<svg width="960" height="500"></svg>
+<svg width="1050" height="900"></svg>
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
 // SOURCE: https://bl.ocks.org/mbostock/3884955
 
 var svg = d3.select("svg"),
-    margin = {top: 20, right: 80, bottom: 30, left: 50},
+    margin = {top: 20, right: 500, bottom: 30, left: 150},
     width = svg.attr("width") - margin.left - margin.right,
     height = svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var parseTime = d3.timeParse("%Y%m%d");
+var parsed_data = [];
 
-var x = d3.scaleTime().range([0, width]),
+var chosen_y,
+    chosen_x,
+    degree,
+    x = d3.scaleOrdinal().range([0, width]),
     y = d3.scaleLinear().range([height, 0]),
-    z = d3.scaleOrdinal(d3.schemeCategory10);
+    color = d3.scaleOrdinal(d3.schemeCategory10),
+    base_y = d3.scaleLinear().range([height, 0]),
+    base_x = d3.scaleOrdinal().range([0, width])
 
 var line = d3.line()
-    .curve(d3.curveBasis)
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.temperature); });
+    .x(function(d) { 
+      return chosen_x(d.name); })
+    .y(function(d) { 
+      if (d.value < chosen_y.domain()[0]){
+        return chosen_y(chosen_y.domain()[0])
+      }
+      return chosen_y(d.value); });
 
-d3.tsv("data.tsv", type, function(error, data) {
+d3.csv("data.csv", type, function(error, data) {
   if (error) throw error;
 
-  var cities = data.columns.slice(1).map(function(id) {
-    return {
-      id: id,
-      values: data.map(function(d) {
-        return {date: d.date, temperature: d[id]};
-      })
-    };
-  });
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-
+  x.domain(['Starting Median Salary','Mid-Career Median Salary']);
+  base_x.domain(['Baseline','Percent Change']);
+  var mins = [d3.min(parsed_data, function(d) { return  d['Starting Median Salary']; }),d3.min(parsed_data, function(d) { return  d['Mid-Career Median Salary']; })]
+  var maxes = [d3.max(parsed_data, function(d) { return  d['Starting Median Salary']; }),d3.max(parsed_data, function(d) { return  d['Mid-Career Median Salary']; })]
   y.domain([
-    d3.min(cities, function(c) { return d3.min(c.values, function(d) { return d.temperature; }); }),
-    d3.max(cities, function(c) { return d3.max(c.values, function(d) { return d.temperature; }); })
+    d3.min(mins),
+    d3.max(maxes)
   ]);
-
-  z.domain(cities.map(function(c) { return c.id; }));
+  base_y.domain([
+    d3.min(parsed_data, function(d) { return  d['Percent change from Starting to Mid-Career Salary']; }),
+    d3.max(parsed_data, function(d) { return  d['Percent change from Starting to Mid-Career Salary']; })
+  ])
+  chosen_y = y;
+  chosen_x = x;
+  color.domain(parsed_data.map(function(d) { return d['Undergraduate Major']; }));
 
   g.append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(chosen_x));
 
   g.append("g")
       .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y))
+      .call(d3.axisLeft(chosen_y))
     .append("text")
-      .attr("transform", "rotate(-90)")
+      .classed('y-text',true)
+      //.attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
-      .text("Temperature, ºF");
+      .style('font-weight','bold')
+      .text("Money, in $")
+      .attr('x',function(d){
+        return this.getBBox().width*1.2
+      })
 
-  var city = g.selectAll(".city")
-    .data(cities)
+  degree = g.selectAll(".degree")
+    .data(parsed_data)
     .enter().append("g")
       .attr("class", "city");
 
-  city.append("path")
+  degree.append("path")
       .attr("class", "line")
-      .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return z(d.id); });
+      .attr("d", function(d) { 
+          d.line = this
+          return line(d.values); 
+      })
+      .style("stroke", function(d) { return 'grey'/*color(d.id)*/; })
+      .style('stroke-opacity','0.5')
+      .style('stroke-width',1)
 
-  city.append("text")
-      .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")"; })
+  degree.append("text")
+      .datum(function(d) { 
+        var blep = {
+          line: d.line,
+          id: d['Undergraduate Major'], 
+          value: d.values[d.values.length - 1],
+          alt_v: d.base_values[d.base_values.length - 1]
+        }
+        return blep
+      })
+      .classed('degree-label',true)
+      .style('font-size','12px')
+      .style('font-weight','normal')
+      .attr("transform", function(d) { return "translate(" + x(d.value.name) + "," + chosen_y(d.value.value) + ")"; })
       .attr("x", 3)
       .attr("dy", "0.35em")
-      .style("font", "10px sans-serif")
-      .text(function(d) { return d.id; });
+      .text(function(d) { return d.id; })
+      .style('opacity','0.3')
+      .on('mouseover',mouseover)
+      .on('mouseout',mouseout)
+      .on('click',click)
 });
 
+function mouseover(d,i) {
+  console.log(d)
+  d3.select(this)
+    .style('opacity','1')
+    .style('font-size','24px')
+    .style('font-weight','bold')
+  d3.select(d.line)
+    .style("stroke", function(d) { return 'black'/*color(d.id)*/; })
+    .style('stroke-width',3)
+    .style('stroke-opacity','0.5')
+}
+
+function mouseout(d,i) {
+  d3.selectAll('.degree-label')
+    .style('opacity','0.3')
+    .style('font-size','12px')
+    .style('font-weight','normal')
+  d3.selectAll('.line')
+    .style("stroke", function(d) { return 'grey'/*color(d.id)*/; })
+    .style('stroke-width',1)
+    .style('stroke-opacity','0.5')
+}
+
+function click(d,i) {
+  chosen_y = base_y
+  chosen_x = base_x
+  d3.select('.axis--y')
+    .call(d3.axisLeft(chosen_y))
+  d3.select(".y-text")
+    //.attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", "0.71em")
+    .attr("fill", "#000")
+    .style('font-weight','bold')
+    .text("Baseline, Percent Change")
+    .attr('x',function(d){
+      return this.getBBox().width*1.2
+    })
+
+  d3.select('.axis--x')
+    .call(d3.axisBottom(chosen_x))
+
+  d3.selectAll('.line')
+    .attr("d", function(d) { 
+        d.line = this
+        return line(d.base_values); 
+    })
+
+  d3.selectAll('.degree-label')
+    .attr("transform", function(d) { return "translate(" + chosen_x(d.alt_v.name) + "," + chosen_y(d.alt_v.value) + ")"; })
+}
+
 function type(d, _, columns) {
-  d.date = parseTime(d.date);
-  for (var i = 1, n = columns.length, c; i < n; ++i) d[c = columns[i]] = +d[c];
+  var arr = []
+  var alt_arr = []
+  var obj = {}
+  var obj_one = {}
+  var obj_two = {}
+  var obj_three = {}
+  var obj_four = {}
+
+  obj['Mid-Career Median Salary'] = +d['Mid-Career Median Salary'].replace(/\$|,/g,'')
+  obj['Starting Median Salary'] = +d['Starting Median Salary'].replace(/\$|,/g,'')
+  obj['Percent change from Starting to Mid-Career Salary'] = +d['Percent change from Starting to Mid-Career Salary']
+  obj['Undergraduate Major'] = d['Undergraduate Major']
+
+  obj_one.name = 'Starting Median Salary'
+  obj_one.value = +d['Starting Median Salary'].replace(/\$|,/g,'')
+  arr.push(obj_one)
+  obj_two.name = 'Mid-Career Median Salary'
+  obj_two.value = +d['Mid-Career Median Salary'].replace(/\$|,/g,'')
+  arr.push(obj_two)
+  obj.values = arr
+
+  obj_three.name = 'Baseline'
+  obj_three.value = 0
+  alt_arr.push(obj_three)
+  obj_four.name = 'Percent Change'
+  obj_four.value = +d['Percent change from Starting to Mid-Career Salary']
+  alt_arr.push(obj_four)
+  obj.base_values = alt_arr
+
+  parsed_data.push(obj)
+
   return d;
 }
 

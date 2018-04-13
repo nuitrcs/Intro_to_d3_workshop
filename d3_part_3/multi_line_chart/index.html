@@ -46,6 +46,7 @@ d3.tsv("data.tsv", type, function(error, data) {
       })
     };
   });
+  console.log(cities)
 
   x.domain(d3.extent(data, function(d) { return d.date; }));
 
