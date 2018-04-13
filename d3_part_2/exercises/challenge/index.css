@@ -1,0 +1,22 @@
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis--x path {
+  display: none;
+}
+
+.tooltip {
+	position: absolute;
+	display: none;
+	height: auto;
+	background: none repeat scroll 0 0 #ffffff;
+	border: none;
+	padding: 2px;
+	text-align: center;
+	z-index: 9999;
+}

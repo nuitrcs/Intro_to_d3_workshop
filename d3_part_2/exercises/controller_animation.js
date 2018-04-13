@@ -48,12 +48,11 @@ var bars = g.selectAll(".bar")
 var sortedData;
 function freqDescending(a,b) {
     return b.frequency - a.frequency
-}/*
+}
+/*
 function sort() {
     sortedData = data.slice().sort(freqDescending)
-    function freqDescending(a,b) {
-        return b.frequency - a.frequency
-    }
+
     console.log(data)
     console.log(sortedData)
     bars
@@ -70,6 +69,7 @@ function sort() {
         .attr("x", function(d) { return x(d.letter); })
 
 }
+
 function sort() {
     data.sort(freqDescending)
 
@@ -94,7 +94,12 @@ function sort() {
         .transition()
         .ease(d3.easeBounce) //https://bl.ocks.org/d3noob/1ea51d03775b9650e8dfd03474e202fe
         .duration(1600)
-        .attr("x", function(d) { return x(d.letter); })
+        .attr("x", function(d) { 
+            console.log(this)
+            console.log(d3.select(this))
+            console.log(d3.select(this).node())
+            return x(d.letter); 
+        })
 
     xaxis
         .transition()
