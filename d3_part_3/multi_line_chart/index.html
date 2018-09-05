@@ -34,11 +34,11 @@ var line = d3.line()
     .curve(d3.curveBasis)
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.temperature); });
-
+var cities;
 d3.tsv("data.tsv", type, function(error, data) {
   if (error) throw error;
 
-  var cities = data.columns.slice(1).map(function(id) {
+  cities = data.columns.slice(1).map(function(id) {
     return {
       id: id,
       values: data.map(function(d) {
